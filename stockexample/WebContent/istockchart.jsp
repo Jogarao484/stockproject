@@ -39,9 +39,9 @@
 	
 	    $interval(function(){
 	        var months=$scope.stocksData.length+1;
-	        var stocks= Math.round(Math.random() * 100);
+	        var stocks= Math.round(Math.random() * 10);
 	        $scope.stocksData.push({months: months, stocks:stocks});
-	    }, 0, 10);
+	    }, 0, 100);
 	}]);
 	
 	app.directive('linearChart', function($parse, $window){
