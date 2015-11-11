@@ -3,7 +3,7 @@
   <display-name>stockexample</display-name>
   <welcome-file-list>  	
   	<welcome-file>istockchart.jsp</welcome-file>
-  	<!-- <welcome-file>searchstock.jsp</welcome-file>
-  	<welcome-file>barchart.jsp</welcome-file> -->
+  	<welcome-file>searchstock.jsp</welcome-file>
+  	<welcome-file>barchart.jsp</welcome-file>
   </welcome-file-list>
 </web-app>
