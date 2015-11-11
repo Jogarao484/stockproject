@@ -34,23 +34,14 @@
 	
 	app.controller('StocksController', ['$scope','$interval', function($scope, $interval){
 	    $scope.stocksData=[
-	        {months: 1,stocks: 54},
-	        {months: 2,stocks: 66},
-	        {months: 3,stocks: 77},
-	        {months: 4,stocks: 70},
-	        {months: 5,stocks: 60},
-	        {months: 6,stocks: 63},
-	        {months: 7,stocks: 55},
-	        {months: 8,stocks: 47},
-	        {months: 9,stocks: 55},
-	        {months: 10,stocks: 30}
+	        {months: 1,stocks: 54}
 	    ];
 	
 	    $interval(function(){
 	        var months=$scope.stocksData.length+1;
 	        var stocks= Math.round(Math.random() * 100);
 	        $scope.stocksData.push({months: months, stocks:stocks});
-	    }, 1000, 10);
+	    }, 0, 10);
 	}]);
 	
 	app.directive('linearChart', function($parse, $window){
