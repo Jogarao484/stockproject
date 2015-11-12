@@ -1,90 +1,357 @@
-
-<html class="no-js" id="ng-app" ng-app="app">
-<!--<![endif]-->
+<!doctype html>
+<html lang="en" ng-app="app">
 <head>
-<title>StockSearchingFeatureDemo using AngularJS</title>
-<meta name='viewport' content='width=device-width,initial-scale=1'>
-<style>
-.angucomplete-dropdown {
-	width: 37.5%;
-	margin: 0 0 0 142px;
-	text-align: left;
-}
+<meta charset="UTF-8">
+<meta name="Generator" content="EditPlus®">
+<meta name="Author" content="SVSS">
+<meta name="Keywords" content="">
+<meta name="Description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<title>Stock Mobile App</title>
+<script src="js/angular.min.js" type="text/javascript"></script>
 
-.large-padded-row {
-	text-align: center;
-	margin: 0px 0px;
-	padding: 90px 10px 250px 10px;
-	background-color: rgba(0, 205, 0, 0.7);
-}
+<!-- search css and angular js -->
+<script src="js/search/angular-touch.min.js" type="text/javascript"></script>
+<script src="js/search/search.js" type="text/javascript"></script>
+<script>
+var app = angular.module('app', ["ngTouch", "angucomplete-alt"]);
 
-.body {
-	margin: 0px;
-	width: 35%;
-}
+app.controller('MainController', ['$scope', '$http',
+  function MainController($scope, $http) {
+    $scope.data = [
+   { "name" : "Acetaminophen" },
+   { "name" : "Apple" },
+   { "name" : "AppSumo" },
+   { "name" : "Appache" },
+   { "name" : "Igate" },
+   { "name" : "bosch" },
+   { "name" : "csr" },
+   { "name" : "Cognizant" },
+   { "name" : "Tech Mahindra" },
+   { "name" : "Reliance" },
+   { "name" : "Tcs" },
+   { "name" : "Wipro" },
+   { "name" : "Flipkart" },
+   { "name" : "Infosys" },
+   { "name" : "Capgemini" },
+   { "name" : "Accenture" },
+   { "name" : "Oracle" },
+   { "name" : "Cisco" },
+   { "name" : "Svss" },
+   { "name" : "Hcl technologies" },
+   { "name" : "Ntt Data" },
+   { "name" : "Arris Global" },
+   { "name" : "Marlabs" }
+   ]
+  }
+]); 
+</script>
+<!--// search css and angular js -->
 
-#angucomplete-alt id {
-	border: 5px solid blue;
+<!-- line chart css and angular js code -->
+	<!-- <script type="text/javascript" src="js/linechart/d3.v3.min.js"></script>
+<script type="text/javascript">
+	var app = angular.module('chartApp', []);
+	
+	app.controller('StocksController', ['$scope','$interval', function($scope, $interval){
+	    $scope.stocksData=[
+	        {months: 1,stocks: 54}
+	    ];
+	
+	    $interval(function(){
+	        var months=$scope.stocksData.length+1;
+	        var stocks= Math.round(Math.random() * 10);
+	        $scope.stocksData.push({months: months, stocks:stocks});
+	    }, 0, 100);
+	}]);
+	
+	app.directive('linearChart', function($parse, $window){
+	   return{
+	      restrict:'EA',
+	      template:"<svg width='850' height='200'></svg>",
+	       link: function(scope, elem, attrs){
+	           var exp = $parse(attrs.chartData);
+	
+	           var stocksDataToPlot=exp(scope);
+	           var padding = 20;
+	           var pathClass="path";
+	           var xScale, yScale, xAxisGen, yAxisGen, lineFun;
+	
+	           var d3 = $window.d3;
+	           var rawSvg=elem.find('svg');
+	           var svg = d3.select(rawSvg[0]);
+	
+	           scope.$watchCollection(exp, function(newVal, oldVal){
+	               stocksDataToPlot=newVal;
+	               redrawLineChart();
+	           });
+	
+	           function setChartParameters(){
+	
+	               xScale = d3.scale.linear()
+	                   .domain([stocksDataToPlot[0].months, stocksDataToPlot[stocksDataToPlot.length-1].months])
+	                   .range([padding + 5, rawSvg.attr("width") - padding]);
+	
+	               yScale = d3.scale.linear()
+	                   .domain([0, d3.max(stocksDataToPlot, function (d) {
+	                       return d.stocks;
+	                   })])
+	                   .range([rawSvg.attr("height") - padding, 0]);
+	
+	               xAxisGen = d3.svg.axis()
+	                   .scale(xScale)
+	                   .orient("bottom")
+	                   .ticks(stocksDataToPlot.length - 1);
+	
+	               yAxisGen = d3.svg.axis()
+	                   .scale(yScale)
+	                   .orient("left")
+	                   .ticks(5);
+	
+	               lineFun = d3.svg.line()
+	                   .x(function (d) {
+	                       return xScale(d.months);
+	                   })
+	                   .y(function (d) {
+	                       return yScale(d.stocks);
+	                   })
+	                   .interpolate("basis");
+	           }
+	         
+	         function drawLineChart() {
+	
+	               setChartParameters();
+	
+	               svg.append("svg:g")
+	                   .attr("class", "x axis")
+	                   .attr("transform", "translate(0,180)")
+	                   .call(xAxisGen);
+	
+	               svg.append("svg:g")
+	                   .attr("class", "y axis")
+	                   .attr("transform", "translate(20,0)")
+	                   .call(yAxisGen);
+	
+	               svg.append("svg:path")
+	                   .attr({
+	                       d: lineFun(stocksDataToPlot),
+	                       "stroke": "blue",
+	                       "stroke-width": 2,
+	                       "fill": "none",
+	                       "class": pathClass
+	                   });
+	           }
+	
+	           function redrawLineChart() {
+	
+	               setChartParameters();
+	
+	               svg.selectAll("g.y.axis").call(yAxisGen);
+	
+	               svg.selectAll("g.x.axis").call(xAxisGen);
+	
+	               svg.selectAll("."+pathClass)
+	                   .attr({
+	                       d: lineFun(stocksDataToPlot)
+	                   });
+	           }
+	
+	           drawLineChart();
+	       }
+	   };
+	});
+</script> -->
+<!--// line chart css and angular js code -->
+
+<!-- bar chart css and angular js code -->
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/highcharts.js"></script>
+<!-- <script type="text/javascript" src="js/exporting.js"></script> -->
+<style type="text/css">
+#container {
+	min-width: 110px;
+	height: 240px;
+	margin: 0 auto;
 }
 </style>
+<script type="text/javascript">
+	$(function() {
+		$("#container")
+				.highcharts(
+						{
+							chart : {
+								zoomType : 'xy'
+							},
+							title : {
+								text : "Stock Chart"
+							},
+							xAxis : [ {
+								categories : [ 'Jan 5', 'Feb 15', 'Mar 1', 'Apr 7',
+										'May 9', 'Jun 28', 'Jul 17', 'Aug 23', 'Sep 25',
+										'Oct 10', 'Nov 11', 'Dec 3' ]
+							} ],
+							yAxis : [ { //Primary yAxis
+								labels : {
+									format : '{value}',
+									style : {
+										color : 'white'
+									}
+								},
+								title : {
+									text : ' ',
+									style : {
+										color : 'white'
+									}
+								}
+							}, {//Secondary yAxis
+								title : {
+									text : 'Currency',
+									style : {
+										color : 'white'
+									}
+								},
+								labels : {
+									format : '{value}.00',
+									style : {
+										color : 'white'
+									}
+								},
+								opposite : true
+							} ],
+							tooltip : {
+								shared : true
+							},
+							legend : {
+								layout : 'vertical',
+								align : 'left',
+								x : 50,
+								verticalAlign : 'top',
+								y : 50,
+								floating : true,
+								backgroundColor : ''
+							},
+							series : [
+									{
+										name : 'Currency',
+										color : '#9999CC',
+										type : 'column',
+										yAxis : 1,
+										data : [ 49.9, 71.5, 106.4, 129.2,
+												144.0, 176.0, 135.6, 148.5,
+												216.4, 194.1, 95.6, 54.4 ],
+										tooltip : {
+											valueSuffix : ' .00'
+										}
+									},
+									{
+										name : 'Duration',
+										color : '#9999CC',
+										type : 'spline',
+										yAxis : 1,
+										data : [159.9, 191.5, 206.4, 229.2,
+												244.0, 276.0, 235.6, 248.5,
+												316.4, 294.1, 195.6, 154.4 ],
+										tooltip : {
+											valueSuffix : ''
+										}
+									} ]
+						});
+	});
+</script>
+<!--// bar chart css and angular js code -->
+<script type="text/javascript">
+	  	function load(){
+			$(document).ready(function(){
+				$("#container").hide();
+				$("#hide_details").hide();				
+			});
+		}
+  </script>
+  <script type="text/javascript">
+	$(document).ready(function(){
+		$("#show_details").click(function(){
+			$("#container").show();
+			$("#show_details").hide();
+			$("#hide_details").show();
+		});
+		
+		$("#hide_details").click(function(){			
+			$("#container").hide();
+			$("#hide_details").hide();
+			$("#show_details").show();			
+		}); 
+	});
+  </script>
 </head>
-<body ng-controller="MainController" class="body">
-	<div>
-		<div class="large-padded-row">
+<body ng-controller="MainController"  onload="load()">
+	<table class="table" cellpadding="15px" cellspacing="15px">
+		<tr>
+			<td>
+				<img src="images/image.png" alt="Smiley face" height="35" width="45" id="img1">
+			</td>
+			<td>
+				<p>SEARCH STOCKS</p>
+			</td>
+			<td><p style="font-size: 25px">X</p></td>
+		</tr>
 
-			<div angucomplete-alt id="ex5" placeholder="Search" pause="500"
-				selected-object="selectedObject" local-data="data"
-				search-fields="name" title-field="name" minlength="3"
-				input-class="form-control form-control-small"
-				match-class="highlight" force-list-selection="false"></div>
-		</div>
+		<tr>
+			<td align="center" colspan="3"><label><a class="current" href="#">SEARCH</a></label>&nbsp;&nbsp;&nbsp;<label><a href="#">EXPLORE</a></label></td>
+		</tr>
 
-	</div>
-	<div>
-	<script
-		src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular.min.js"></script>
-	<script
-		src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-touch.min.js"></script>
-	<script src="js/all.min.js"></script>
-	<script src="js/angular.min.js"></script>
-	<script src="js/jquery.min.js"></script>
-	<script>
- /*! Copyright (c) 2014 Hidenari Nozaki and contributors | Licensed under the MIT license */
-"use strict";angular.module("angucomplete-alt",[]).directive("angucompleteAlt",["$q","$parse","$http","$sce","$timeout",function(a,b,c,d,e){var f=40,g=39,h=38,i=37,j=27,k=13,l=9,m=3,n=500,o=200,p="autocomplete-required",q="Searching...",r="No results found";return{restrict:"EA",require:"^?form",scope:{selectedObject:"=",disableInput:"=",initialValue:"@",localData:"=",remoteUrlRequestFormatter:"=",remoteUrlResponseFormatter:"=",remoteUrlErrorCallback:"=",id:"@",placeholder:"@",remoteUrl:"@",remoteUrlDataField:"@",titleField:"@",descriptionField:"@",imageField:"@",inputClass:"@",pause:"@",searchFields:"@",minlength:"@",matchClass:"@",clearSelected:"@",overrideSuggestions:"@",fieldRequired:"@",fieldRequiredClass:"@",inputChanged:"=",autoMatch:"@",focusOut:"&",focusIn:"&",forceListSelection:"="},template:'<div class="angucomplete-holder" ng-class="{\'angucomplete-dropdown-visible\': showDropdown}">  <input id="{{id}}_value" ng-model="searchStr" ng-disabled="disableInput" type="text" placeholder="{{placeholder}}" ng-focus="onFocusHandler()" class="{{inputClass}}" ng-focus="resetHideResults()" ng-blur="hideResults($event)" autocapitalize="off" autocorrect="off" autocomplete="off" ng-change="inputChangeHandler(searchStr)"/>  <div id="{{id}}_dropdown" class="angucomplete-dropdown" ng-show="showDropdown">    <div class="angucomplete-searching" ng-show="searching" ng-bind="textSearching"></div>    <div class="angucomplete-searching" ng-show="!searching && (!results || results.length == 0)" ng-bind="textNoResults"></div>    <div class="angucomplete-row" ng-repeat="result in results" ng-click="selectResult(result)" ng-mouseenter="hoverRow($index)" ng-class="{\'angucomplete-selected-row\': $index == currentIndex}">      <div ng-if="imageField" class="angucomplete-image-holder">        <img ng-if="result.image && result.image != \'\'" ng-src="{{result.image}}" class="angucomplete-image"/>        <div ng-if="!result.image && result.image != \'\'" class="angucomplete-image-default"></div>      </div>      <div class="angucomplete-title" ng-if="matchClass" ng-bind-html="result.title"></div>      <div class="angucomplete-title" ng-if="!matchClass">{{ result.title }}</div>      <div ng-if="matchClass && result.description && result.description != \'\'" class="angucomplete-description" ng-bind-html="result.description"></div>      <div ng-if="!matchClass && result.description && result.description != \'\'" class="angucomplete-description">{{result.description}}</div>    </div>  </div></div>',link:function(b,s,t,u){function v(a){return a.which?a.which:a.keyCode}function w(a){"function"==typeof b.selectedObject?b.selectedObject(a):b.selectedObject=a,C(a?!0:!1)}function x(a){return function(c){return b[a]?b[a](c):c}}function y(a){w({originalObject:a}),b.clearSelected&&(b.searchStr=null),Q()}function z(a){return b.titleField.split(",").map(function(b){return A(a,b)}).join(" ")}function A(a,b){var c,d;return b?(c=b.split("."),d=a,c.forEach(function(a){d=d[a]})):d=a,d}function B(a,c){var e,f,g=new RegExp(c,"i");if(a)return f=a.match(g),e=f?a.replace(g,'<span class="'+b.matchClass+'">'+f[0]+"</span>"):a,d.trustAsHtml(e)}function C(a){bb=b.searchStr,b.fieldRequired&&u&&u.$setValidity(ab,a)}function D(a){var c=v(a);c!==i&&c!==g&&(c===h||c===k?a.preventDefault():c===f?(a.preventDefault(),!b.showDropdown&&b.searchStr&&b.searchStr.length>=$&&(R(),b.searching=!0,U(b.searchStr))):c===j?(Q(),b.$apply(function(){Z.val(b.searchStr)})):(b.searchStr&&""!==b.searchStr?b.searchStr.length>=$&&(R(),_&&e.cancel(_),b.searching=!0,_=e(function(){U(b.searchStr)},b.pause)):b.showDropdown=!1,bb&&bb!==b.searchStr&&w(void 0)))}function E(a){b.overrideSuggestions&&(b.selectedObject&&b.selectedObject.originalObject===b.searchStr||(a.preventDefault(),y(b.searchStr)))}function F(a){var b=getComputedStyle(a);return a.offsetHeight+parseInt(b.marginTop,10)+parseInt(b.marginBottom,10)}function G(){return db.getBoundingClientRect().top+parseInt(getComputedStyle(db).maxHeight,10)}function H(){return s[0].querySelectorAll(".angucomplete-row")[b.currentIndex]}function I(){return H().getBoundingClientRect().top-(db.getBoundingClientRect().top+parseInt(getComputedStyle(db).paddingTop,10))}function J(a){db.scrollTop=db.scrollTop+a}function K(){var a=b.results[b.currentIndex];Z.val(b.matchClass?z(a.originalObject):a.title)}function L(a){var c=v(a),d=null,e=null;c===k&&b.results?(b.currentIndex>=0&&b.currentIndex<b.results.length?(a.preventDefault(),b.selectResult(b.results[b.currentIndex])):(E(a),Q()),b.$apply()):c===f&&b.results?(a.preventDefault(),b.currentIndex+1<b.results.length&&b.showDropdown&&(b.$apply(function(){b.currentIndex++,K()}),eb&&(d=H(),G()<d.getBoundingClientRect().bottom&&J(F(d))))):c===h&&b.results?(a.preventDefault(),b.currentIndex>=1?(b.$apply(function(){b.currentIndex--,K()}),eb&&(e=I(),0>e&&J(e-1))):0===b.currentIndex&&b.$apply(function(){b.currentIndex=-1,Z.val(b.searchStr)})):c===l&&b.results&&b.results.length>0&&b.showDropdown&&(b.selectResult(-1===b.currentIndex?b.results[0]:b.results[b.currentIndex]),b.$apply())}function M(a){return function(c){b.searching=!1,V(A(X(c),b.remoteUrlDataField),a)}}function N(a,c,d,e){0!==c&&(b.remoteUrlErrorCallback?b.remoteUrlErrorCallback(a,c,d,e):console&&console.error&&console.error("http error"))}function O(){cb&&cb.resolve()}function P(d){var e={},f=b.remoteUrl+d;b.remoteUrlRequestFormatter&&(e={params:b.remoteUrlRequestFormatter(d)},f=b.remoteUrl),O(),cb=a.defer(),e.timeout=cb.promise,c.get(f,e).success(M(d)).error(N)}function Q(){b.showDropdown=!1,b.results=[],db&&(db.scrollTop=0)}function R(){b.showDropdown=!0,b.currentIndex=-1,b.results=[]}function S(a){var c,d,e,f,g=b.searchFields.split(","),h=[];for(c=0;c<b.localData.length;c++){for(d=!1,e=0;e<g.length;e++)f=A(b.localData[c],g[e])||"",d=d||f.toLowerCase().indexOf(a.toLowerCase())>=0;d&&(h[h.length]=b.localData[c])}b.searching=!1,V(h,a)}function T(a,c,d){for(var e in c)if(c[e].toLowerCase()===d.toLowerCase())return void b.selectResult(a)}function U(a){a.length<$||(b.localData?b.$apply(function(){S(a)}):P(a))}function V(a,c){var d,e,f,g,h,i;if(a&&a.length>0)for(b.results=[],d=0;d<a.length;d++)b.titleField&&""!==b.titleField&&(g=h=z(a[d])),e="",b.descriptionField&&(e=i=A(a[d],b.descriptionField)),f="",b.imageField&&(f=A(a[d],b.imageField)),b.matchClass&&(h=B(g,c),i=B(e,c)),b.results[b.results.length]={title:h,description:i,image:f,originalObject:a[d]},b.autoMatch&&T(b.results[b.results.length-1],{title:g,desc:e||""},b.searchStr);else b.results=[]}var W,X,Y,Z=s.find("input"),$=m,_=null,ab=p,bb=null,cb=null,db=s[0].querySelector(".angucomplete-dropdown"),eb=!1,fb=null;s.on("mousedown",function(a){fb=a.target.id}),b.currentIndex=null,b.searching=!1,b.searchStr=b.initialValue,Y=b.$watch("initialValue",function(a){a&&a.length>0&&(b.searchStr=b.initialValue,C(!0),Y())}),b.$on("angucomplete-alt:clearInput",function(a,c){c?b.id===c&&(b.searchStr=null,Q()):(b.searchStr=null,Q())}),b.onFocusHandler=function(){b.focusIn&&b.focusIn()},b.hideResults=function(){b.forceListSelection?b.searchStr="":(!b.selectedObject||b.selectedObject&&/^\s*$/.test(b.selectedObject.title))&&(b.selectedObject={title:b.searchStr,description:"",image:"",originalObject:{name:b.searchStr}},w(b.selectedObject)),fb===b.id+"_dropdown"?fb=null:(W=e(function(){Q(),b.$apply(function(){Z.val(b.searchStr)})},o),O(),b.focusOut&&b.focusOut())},b.resetHideResults=function(){W&&e.cancel(W)},b.hoverRow=function(a){b.currentIndex=a},b.selectResult=function(a){b.matchClass&&(a.title=z(a.originalObject),a.description=A(a.originalObject,b.descriptionField)),b.searchStr=b.clearSelected?null:a.title,w(a),Q()},b.inputChangeHandler=function(a){return a.length<$&&Q(),b.inputChanged&&(a=b.inputChanged(a)),a},b.fieldRequiredClass&&""!==b.fieldRequiredClass&&(ab=b.fieldRequiredClass),b.minlength&&""!==b.minlength&&($=b.minlength),b.pause||(b.pause=n),b.clearSelected||(b.clearSelected=!1),b.overrideSuggestions||(b.overrideSuggestions=!1),b.fieldRequired&&u&&C(b.initialValue?!0:!1),b.textSearching=t.textSearching?t.textSearching:q,b.textNoResults=t.textNoResults?t.textNoResults:r,Z.on("keydown",L),Z.on("keyup",D),X=x("remoteUrlResponseFormatter"),b.$on("$destroy",function(){C(!0)}),e(function(){var a=getComputedStyle(db);eb=a.maxHeight&&"auto"===a.overflowY})}}}]);       
-      </script>
-	<script>
-      var app = angular.module('app', ["ngTouch", "angucomplete-alt"]);
+		<tr>
+			<td><img src="images/search.png" alt="Smiley face" height="35"
+				width="45" id="img1"></td>
+			<td align="center"><div>
+					<!-- search box code -->
+					<div class="large-padded-row">
 
-      app.controller('MainController', ['$scope', '$http',
-        function MainController($scope, $http) {
-          $scope.data = [
-         { "name" : "Acetaminophen" },
-         { "name" : "Apple" },
-         { "name" : "AppSumo" },
-         { "name" : "Appache" },
-         { "name" : "Igate" },
-         { "name" : "bosch" },
-         { "name" : "csr" },
-         { "name" : "Cognizant" },
-         { "name" : "Tech Mahindra" },
-         { "name" : "Reliance" },
-         { "name" : "Tcs" },
-         { "name" : "Wipro" },
-         { "name" : "Flipkart" },
-         { "name" : "Infosys" },
-         { "name" : "Capgemini" },
-         { "name" : "Accenture" },
-         { "name" : "Oracle" },
-         { "name" : "Cisco" },
-         { "name" : "Svss" },
-         { "name" : "Hcl technologies" },
-         { "name" : "Ntt Data" },
-         { "name" : "Arris Global" },
-         { "name" : "Marlabs" }
-         ]
-        }
-      ]); 
-      </script>
-	</div>
+						<div angucomplete-alt id="ex5" placeholder="Search" pause="500"
+							selected-object="selectedObject" local-data="data"
+							search-fields="name" title-field="name" minlength="3"
+							input-class="form-control form-control-small"
+							match-class="highlight" force-list-selection="true" style="width: 70%"></div>
+					</div>
+				</div></td>
+			<td><p id="tab">X</p></td>
+			<td></td>			
+		</tr>		
+		<tr>
+			<td><p style="color: white">APPLE</p></td>
+			<td style="color: white">117.50&nbsp;&nbsp;&nbsp;<span style="color: green">(3.4%)</span></td>
+			<td><img src="images/image4.png" alt="Smiley face" height="35" width="45" id="show_details"><img src="images/minus.png" alt="Smiley face" height="35" width="45" id="hide_details"></td>
+		</tr>
+
+		<tr> <!-- line chart code -->
+			<td align="center" colspan="3">
+				<div id="container" align="center"></div>
+			</td> <!-- end line chart code -->
+		</tr>
+
+		<tr>
+			<td><p style="color: white">APPEND</p></td>
+			<td style="color: white">11.50&nbsp;&nbsp;&nbsp;<span style="color: green">(2.91%)</span></td>
+			<td><img src="images/image4.png" alt="Smiley face" height="35" width="45" id="img1"></td>
+
+		</tr>
+
+		<tr>
+			<td><p style="color: white">APPLITECH</p></td>
+			<td style="color: white">59.82&nbsp;&nbsp;&nbsp;<span style="color: green">(0.81%)</span></td>
+			<td><img src="images/image4.png" alt="Smiley face" height="35" width="45" id="img1"></td>
+		</tr>
+
+		<tr>
+			<td><p style="color: white">APEX</p></td>
+			<td style="color: white">11.50&nbsp;&nbsp;&nbsp;<span style="color: green">(2%)</span></td>
+			<td><img src="images/image4.png" alt="Smiley face" height="35" width="45" id="img1"></td>
+
+		</tr>
+	</table>
+				<!-- <div ng-app="chartApp" ng-controller="StocksController">
+					<h1>Today's Stock Chart</h1>
+					<div linear-chart chart-data="stocksData"></div>
+				</div> -->				
 </body>
 </html>

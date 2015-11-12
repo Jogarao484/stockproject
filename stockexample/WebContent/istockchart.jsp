@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script type="text/javascript" src="js/angular.min.js"></script>
-<script type="text/javascript" src="js/d3.v3.min.js"></script>
+<script type="text/javascript" src="js/linechart/d3.v3.min.js"></script>
 <style type="text/css">
 	.axis path,
 	.axis line{

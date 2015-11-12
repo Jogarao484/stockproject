@@ -1,0 +1,53 @@
+*{
+	margin: 0px;
+	padding: 0px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 100%;
+	font-weight: bold;
+	color: #9999CC;
+}
+
+body{
+	margin: 0px;
+	padding: 0px;
+	background-color: black;
+}
+
+.table{
+	width : 100%;
+	text-align: center;
+	color: white;
+}
+
+label a {
+	text-decoration: none;
+}
+
+label a:hover{
+	color: white;
+}
+
+#tab{
+	font-size: 25px;
+	background-color: #9999CC;
+	color: black;
+}
+
+.smalltable{
+	width: 100%;
+	font-size: 14px;
+	text-align: right;
+}
+
+
+/* code starts for search fields */
+
+.angucomplete-dropdown {
+	width: auto;
+	text-align: center;
+}
+
+#ex5{
+	width: 120px;
+	overflow: hidden;
+}

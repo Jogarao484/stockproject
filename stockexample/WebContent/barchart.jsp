@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Chart111</title>
+<title>Bar Chart</title>
 <script type="text/javascript" src="js/angular.min.js"></script>
 <!-- <script type="text/javascript" src="js/d3.v3.min.js"></script> -->
 <style type="text/css">
@@ -79,7 +79,7 @@ body {
 	    $scope.width = 600;
 	    $scope.height = 350;
 	    $scope.yAxis = 'Stock Price';
-	    $scope.xAxis = 'January    February    March   April   May   June   July 2014';
+	    $scope.xAxis = 'Jan    Feb    Mar Apr May   2014';
 
 	    // Data 
 
@@ -117,7 +117,7 @@ body {
 	      label: 'May 6',
 	      value: 250
 	    }, {
-	      label: 'June',
+	      label: 'May 15',
 	      value: 300
 	    }];
 
@@ -150,8 +150,8 @@ body {
       <div class="y" style="width:{{height}}px;">{{yAxis}}</div>
       <div class="x">{{xAxis}}</div>
       <!-- Data -->
-       <li ng-repeat="bar in data" class="bar" style="height:{{bar.value / max * height}}px; width:{{width / data.length - 30}}px; left:{{$index / data.length * 260}}px;"><span>{{bar.label}}:{{bar.value}}</span></li>
-       <!-- <li ng-repeat="bar in data" class="bar" style="height:{{bar.value / max * height}}px; width:{{width / data.length - 30}}px; left:{{$index / data.length * width}}px;"><span>{{bar.label}}:{{bar.value}}</span></li> -->
+       <li ng-repeat="bar in data" class="bar" style="height:{{bar.value / max * height}}px; width:{{10}}px; left:{{$index / data.length * 140}}px;"><span>{{bar.label}}:{{bar.value}}</span></li>
+       <!-- <li ng-repeat="bar in data" class="bar" style="height:{{bar.value / max * height}}px; width:{{width / data.length - 5}}px; left:{{$index / data.length * width}}px;"><span>{{bar.label}}:{{bar.value}}</span></li> -->
     </ul>
     
   </div>
